@@ -1,9 +1,6 @@
 from array import array
 import reprlib
 import math
-import functools # reduce
-import operator # xor (异或)
-
 
 class Vector:
     typecode = 'd'
@@ -69,11 +66,6 @@ class Vector:
                 raise AttributeError(msg)
         super().__setattr__(key,value)
 
-
-    #实现hash散列 之前的__eq__是必要方法之一
-    def __hash__(self):
-        hashes = (hash(x) for x in self._components) # 惰性计算各个分量的散列值
-        return functools.reduce(operator.xor,hashes,0)
 
 
     @classmethod

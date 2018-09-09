@@ -1,13 +1,10 @@
 from array import array
 import reprlib
 import math
-import functools # reduce
-import operator # xor (异或)
-
+from abc import ABC
 
 class Vector:
     typecode = 'd'
-    shortcut_names = 'xyzt'
 
     def __init__(self,components):
         self._components = array(self.typecode,components)
@@ -54,26 +51,6 @@ class Vector:
             raise TypeError(msg.format(cls=cls))
 
 
-    #针对属性动态添加
-    def __setattr__(self, key, value):
-        cls = type(self)
-        if len(key) == 1:
-            if key in self.shortcut_names:
-                error = 'readonly attribute {attr_name!r}'
-            elif key.islower():
-                error = "can't set attribute 'a' to 'z' in {cls_name!r}"
-            else:
-                error = ''
-            if error:
-                msg = error.format(attr_name=key,cls_name=cls.__name__)
-                raise AttributeError(msg)
-        super().__setattr__(key,value)
-
-
-    #实现hash散列 之前的__eq__是必要方法之一
-    def __hash__(self):
-        hashes = (hash(x) for x in self._components) # 惰性计算各个分量的散列值
-        return functools.reduce(operator.xor,hashes,0)
 
 
     @classmethod
@@ -81,3 +58,13 @@ class Vector:
         typecode = chr(octets[0])
         memv = memoryview(octets[1:]).cast(typecode)
         return cls(memv)
+
+if __name__ == '__main__':
+    # v1 = Vector([3,4,5])
+    # print(len(v1))
+    # print(v1[0],v1[-1])
+    # v7 = Vector(range(7))
+    # print(v7[1:4])
+    v7 = Vector(range(7))
+    print(v7[1:])
+    print(v7[1:4])
